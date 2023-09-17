@@ -1,0 +1,135 @@
+using System;
+using System.Runtime.CompilerServices;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public class PlayerPaddle : Paddle
+{
+    private Vector2 _direction;
+
+
+    private bool UnlockUp1 = false; //Values used to unlock the movement
+    private bool UnlockUp2 = false;
+    private bool UnlockUp3 = false;
+
+    private bool UnlockDown1 = false;
+    private bool UnlockDown2 = false;
+    private bool UnlockDown3 = false;
+    private bool killSignal = true;
+
+    public AudioSource dialSound;
+    public AudioSource chatter;
+    public AudioSource NumberBoop;
+    public float timeRemaining = 0.5f;
+
+    private void Update() //Coinstantly running so it is good for inputs
+    {
+        if (Input.GetKeyDown("[1]")) //If statement for unlocking 
+        {
+            UnlockUp1 = true;
+            Debug.Log("1");
+            NumberBoop.Play();
+        }
+        if (Input.GetKeyDown("[6]") && UnlockUp1 == true) //If statement for unlocking 
+        {
+            UnlockUp2 = true;
+            Debug.Log("2");
+            NumberBoop.Play();
+        }
+        if (Input.GetKeyDown("[7]") && UnlockUp2 == true) //If statement for unlocking 
+        {
+            UnlockUp3 = true;
+            Debug.Log("3");
+            NumberBoop.Play();
+        }
+
+        if (Input.GetKeyDown("[7]")) //If statement for unlocking 
+        {
+            UnlockDown1 = true;
+            Debug.Log("1");
+            NumberBoop.Play();
+        }
+        if (Input.GetKeyDown("[2]") && UnlockDown1 == true) //If statement for unlocking 
+        {
+            UnlockDown2 = true;
+            Debug.Log("2");
+            NumberBoop.Play();
+        }
+        if (Input.GetKeyDown("[5]") && UnlockDown2 == true) //If statement for unlocking 
+        {
+            UnlockDown3 = true;
+            Debug.Log("3");
+            NumberBoop.Play();
+        }
+
+        if (UnlockUp3 == true || UnlockDown3 == true)
+        {
+            if (Input.GetKeyDown(KeyCode.Period))
+            {
+                killSignal = false;
+                timeRemaining = 0.5f;
+            }
+            else
+            {
+                if (timeRemaining <= 0)
+                {
+                    killSignal = true;
+                }
+                else
+                {
+                    timeRemaining -= Time.deltaTime;
+                }
+            }
+        }
+
+        if (UnlockUp3 == true) //if the unlock code has been placed
+        {
+            if (killSignal == false) //Move up until it has been released
+            {
+                chatter.Play();
+                _direction = Vector2.up; //Move the direction up
+            }
+            if (killSignal == true && timeRemaining <= 0) //Stop allowing movement when the button is released
+            {
+                UnlockUp1 = false;
+                UnlockUp2 = false;
+                UnlockUp3 = false;
+                killSignal = false;
+                timeRemaining = 0.5f;
+                chatter.Stop();
+                dialSound.Play();
+            }
+        }
+        else if (UnlockDown3 == true) //if the unlock code has been placed
+        {
+            if (killSignal == false) //Move down until it has been released
+            {
+                chatter.Play();
+                _direction = Vector2.down; //Move the direction up
+            }
+            if (killSignal == true && timeRemaining <= 0) //Stop allowing movement when the button is released
+            {
+                UnlockDown1 = false;
+                UnlockDown2 = false;
+                UnlockDown3 = false;
+                killSignal = false;
+                timeRemaining = 0.5f;
+                chatter.Stop();
+                dialSound.Play();
+                
+            }
+        }
+        else
+        {
+            _direction = Vector2.zero; //Else do not move
+        }
+    }
+    private void FixedUpdate() //Like update but on an interval
+    {
+        if (_direction.sqrMagnitude != 0) //If the item is moving
+        {
+            _rigidbody.AddForce(_direction * this.speed);
+        }
+    }
+}
