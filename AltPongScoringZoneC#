@@ -1,0 +1,17 @@
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class ScoringZone : MonoBehaviour
+{
+    public EventTrigger.TriggerEvent scoreTrigger;
+    private void OnCollisionEnter2D(Collision2D collision) //Gets called when things collide
+    {
+        Ball ball = collision.gameObject.GetComponent<Ball>();
+
+        if (ball != null) //if it was the ball that collided
+        {
+            BaseEventData eventData = new BaseEventData(EventSystem.current);
+            this.scoreTrigger.Invoke(eventData); //trigger some event
+        }
+    }
+}
