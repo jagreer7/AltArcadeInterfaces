@@ -1,0 +1,27 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BouncySurface : MonoBehaviour
+{
+    public float leftBounceStrength;
+    public float rightBounceStrength;
+    public float bounceStrength;
+
+    public Rigidbody2D ball;
+    //public float leftBounceStrength;
+    private void OnCollisionEnter2D(Collision2D collision) //Gets called when things collide
+    {
+        Ball ball = collision.gameObject.GetComponent<Ball>();
+
+        if (ball != null) //Collided with somethings that wasnt the ball
+        {
+            Vector2 normal = collision.GetContact(0).normal; //Get the vector of the first (index 0) contact
+            //ball.AddForce(-normal * this.bounceStrength); //Add a force in the exiting direction
+
+            Debug.Log(this.ball.velocity.x);
+
+            ball.AddForce(-normal * this.bounceStrength);
+        }
+    }
+}
