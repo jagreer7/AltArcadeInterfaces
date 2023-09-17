@@ -1,0 +1,39 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class GameManager : MonoBehaviour
+{
+    public Ball ball;
+
+    public Paddle playerPaddle;
+    public Paddle computerPaddle;
+
+    public Text playerScoreText;
+    public Text computerScoreText;
+
+    private int _playerScore;
+    private int _computerScore;
+
+    private void ResetRound()
+    {
+        this.playerPaddle.ResetPostion(); //Reset the player paddle
+        this.computerPaddle.ResetPostion(); //Reset the computer paddle
+        this.ball.ResetPosition();//reset the ball to the center
+        this.ball.AddStartingForce();//Add a starting force
+    }
+
+    public void PlayerScores()
+    {
+        _playerScore++;
+        this.playerScoreText.text = _playerScore.ToString();//Display the new score
+        ResetRound();
+        Debug.Log(_playerScore);
+    }
+    public void ComputerScores()
+    {
+        _computerScore++;
+        this.computerScoreText.text = _computerScore.ToString();
+        ResetRound();
+        Debug.Log(_computerScore);
+    }
+}
