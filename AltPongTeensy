@@ -1,0 +1,23 @@
+const int microphonePin = A1;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+int timer = 0;
+int totalVal = 0;
+int val = 0;
+bool good = false;
+
+void loop() {
+
+  val = analogRead(microphonePin);
+
+  if (val > 600){
+    Keyboard.press(KEY_PERIOD);
+  }
+  else {
+    Keyboard.release(KEY_PERIOD);
+  }
+}
+//...........................................................................................................................................
