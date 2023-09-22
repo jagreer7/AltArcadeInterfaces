@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -10,16 +12,30 @@ public class GameManager : MonoBehaviour
 
     public Text playerScoreText;
     public Text computerScoreText;
+    public Text dialStarText;
 
     private int _playerScore;
     private int _computerScore;
+
+    private bool onStartScreen = false;
 
     private void ResetRound()
     {
         this.playerPaddle.ResetPostion(); //Reset the player paddle
         this.computerPaddle.ResetPostion(); //Reset the computer paddle
+        this.dialStarText.gameObject.SetActive(true);
         this.ball.ResetPosition();//reset the ball to the center
-        this.ball.AddStartingForce();//Add a starting force
+        onStartScreen = true;
+    }
+
+    private void Update()
+    {
+        if (onStartScreen == true && Input.GetKeyDown("[*]")) 
+        {
+            this.ball.AddStartingForce();//Add a starting force
+            this.dialStarText.gameObject.SetActive(false);
+            onStartScreen = false;
+        }
     }
 
     public void PlayerScores()
