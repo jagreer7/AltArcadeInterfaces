@@ -8,6 +8,8 @@ public class PlayerPaddle : Paddle
 {
     private Vector2 _direction;
 
+    public Text dialUpText;
+    public Text dialDownText;
 
     private bool UnlockUp1 = false; //Values used to unlock the movement
     private bool UnlockUp2 = false;
@@ -17,53 +19,71 @@ public class PlayerPaddle : Paddle
     private bool UnlockDown2 = false;
     private bool UnlockDown3 = false;
     private bool killSignal = true;
-
+     
     public AudioSource dialSound;
     public AudioSource chatter;
     public AudioSource NumberBoop;
-    public float timeRemaining = 0.5f;
+    public float timeRemaining = 1.0f;
+
+    int upCode1 = 1; //Initial Code Values
+    int upCode2 = 6;
+    int upCode3 = 7;
+
+    int downCode1 = 7;
+    int downCode2 = 2;
+    int downCode3 = 5;
+
 
     private void Update() //Coinstantly running so it is good for inputs
     {
-        if (Input.GetKeyDown("[1]")) //If statement for unlocking 
+        Debug.Log("Up Code: " + upCode1 + ", " + upCode2 + ", " + upCode3);
+        string upCode1String = "[" + upCode1 + "]";
+        string upCode2String = "[" + upCode2 + "]";
+        string upCode3String = "[" + upCode3 + "]";
+        if (Input.GetKeyDown(upCode1String)) //If statement for unlocking 
         {
             UnlockUp1 = true;
-            Debug.Log("1");
+            //Debug.Log("1");
             NumberBoop.Play();
         }
-        if (Input.GetKeyDown("[6]") && UnlockUp1 == true) //If statement for unlocking 
+        if (Input.GetKeyDown(upCode2String) && UnlockUp1 == true) //If statement for unlocking 
         {
             UnlockUp2 = true;
-            Debug.Log("2");
+            //Debug.Log("2");
             NumberBoop.Play();
         }
-        if (Input.GetKeyDown("[7]") && UnlockUp2 == true) //If statement for unlocking 
+        if (Input.GetKeyDown(upCode3String) && UnlockUp2 == true) //If statement for unlocking 
         {
             UnlockUp3 = true;
-            Debug.Log("3");
+            //Debug.Log("3");
             NumberBoop.Play();
         }
 
-        if (Input.GetKeyDown("[7]")) //If statement for unlocking 
+
+        Debug.Log("Down Code: " + downCode1 + ", " + downCode2 + ", " + downCode3);
+        string downCode1String = "[" + downCode1 + "]";
+        string downCode2String = "[" + downCode2 + "]";
+        string downCode3String = "[" + downCode3 + "]";
+        if (Input.GetKeyDown(downCode1String)) //If statement for unlocking 
         {
             UnlockDown1 = true;
             Debug.Log("1");
             NumberBoop.Play();
         }
-        if (Input.GetKeyDown("[2]") && UnlockDown1 == true) //If statement for unlocking 
+        if (Input.GetKeyDown(downCode2String) && UnlockDown1 == true) //If statement for unlocking 
         {
             UnlockDown2 = true;
             Debug.Log("2");
             NumberBoop.Play();
         }
-        if (Input.GetKeyDown("[5]") && UnlockDown2 == true) //If statement for unlocking 
+        if (Input.GetKeyDown(downCode3String) && UnlockDown2 == true) //If statement for unlocking 
         {
             UnlockDown3 = true;
             Debug.Log("3");
             NumberBoop.Play();
         }
 
-        if (UnlockUp3 == true || UnlockDown3 == true)
+        if (UnlockUp3 == true || UnlockDown3 == true) //Timer function to ensure the player has time to speak before hang up
         {
             if (Input.GetKeyDown(KeyCode.Period))
             {
@@ -79,6 +99,7 @@ public class PlayerPaddle : Paddle
                 else
                 {
                     timeRemaining -= Time.deltaTime;
+                    Debug.Log(timeRemaining.ToString());
                 }
             }
         }
@@ -87,7 +108,11 @@ public class PlayerPaddle : Paddle
         {
             if (killSignal == false) //Move up until it has been released
             {
-                chatter.Play();
+                if (!chatter.isPlaying) //If the chatter isnt playing (hopefully only once at the beginning of each call)
+                {
+                    chatter.Play();
+                    Debug.Log("Chatter Playing");
+                }
                 _direction = Vector2.up; //Move the direction up
             }
             if (killSignal == true && timeRemaining <= 0) //Stop allowing movement when the button is released
@@ -96,16 +121,25 @@ public class PlayerPaddle : Paddle
                 UnlockUp2 = false;
                 UnlockUp3 = false;
                 killSignal = false;
-                timeRemaining = 0.5f;
+                timeRemaining = 1.0f;
                 chatter.Stop();
+                Debug.Log("Chatter Stopped");
                 dialSound.Play();
+                upCode1 = UnityEngine.Random.Range(1, 9);
+                upCode2 = UnityEngine.Random.Range(1, 9);
+                upCode3 = UnityEngine.Random.Range(1, 9);
+                this.dialUpText.text = "Dial " + upCode1 + "" + upCode2 + "" + upCode3 + "\n For Up";
             }
         }
         else if (UnlockDown3 == true) //if the unlock code has been placed
         {
             if (killSignal == false) //Move down until it has been released
             {
-                chatter.Play();
+                if (!chatter.isPlaying) //If the chatter isnt playing (hopefully only once at the beginning of each call)
+                {
+                    chatter.Play();
+                    Debug.Log("Chatter Playing");
+                }
                 _direction = Vector2.down; //Move the direction up
             }
             if (killSignal == true && timeRemaining <= 0) //Stop allowing movement when the button is released
@@ -114,10 +148,14 @@ public class PlayerPaddle : Paddle
                 UnlockDown2 = false;
                 UnlockDown3 = false;
                 killSignal = false;
-                timeRemaining = 0.5f;
+                timeRemaining = 1.0f;
                 chatter.Stop();
+                Debug.Log("Chatter Stopped");
                 dialSound.Play();
-                
+                downCode1 = UnityEngine.Random.Range(1, 9);
+                downCode2 = UnityEngine.Random.Range(1, 9);
+                downCode3 = UnityEngine.Random.Range(1, 9);
+                this.dialDownText.text = "Dial " + downCode1 + "" + downCode2 + "" + downCode3 + "\n For Down";
             }
         }
         else
